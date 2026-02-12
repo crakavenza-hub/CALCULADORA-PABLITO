@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ES">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALCULADORA PABLITO ELITE PRO</title>
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3233/3233997.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+    <style>
+        :root {
+            --neon-blue: #00d2ff;
+            --neon-pink: #ff007f;
+            --neon-green: #39ff14;
+            --neon-orange: #ff6e00;
+            --bg-dark: #050508;
+            --card-bg: rgba(15, 15, 25, 0.85);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif; /* Fuente futurista */
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 0%, #1a1a2e 0%, transparent 50%),
+                linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)),
+                url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1200'); /* Fondo tecnológico */
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+            text-transform: uppercase;
+            padding-bottom: 120px;
+        }
+
+        /* HEADER VIBRANTE */
+        .header {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 210, 255, 0.3);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+        }
+
+        /* CONTENEDOR DE TARJETAS */
+        .module {
+            display: none;
+            padding: 20px;
+            max-width: 450px;
+            margin: auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .active { display: block; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 30px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        /* BORDES DE COLOR SEGÚN SECCIÓN */
+        .bayoneta-card { border-top: 4px solid var(--neon-blue); box-shadow: inset 0 0 20px rgba(0, 210, 255, 0.1); }
+        .injerto-card { border-top: 4px solid var(--neon-pink); box-shadow: inset 0 0 20px rgba(255, 0, 127, 0.1); }
+        .codo-card { border-top: 4px solid var(--neon-orange); box-shadow: inset 0 0 20px rgba(255, 110, 0, 0.1); }
+        .peso-card { border-top: 4px solid var(--neon-green); box-shadow: inset 0 0 20px rgba(57, 255, 20, 0.1); }
+
+        h3 { font-size: 14px; letter-spacing: 2px; color: #aaa; margin-bottom: 20px; }
+
+        /* INPUTS ESTILO TERMINAL */
+        label { display: block; font-size: 10px; color: #00d2ff; margin-bottom: 5px; font-weight: bold; }
+        input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        input:focus { border-color: var(--neon-blue); outline: none; box-shadow: 0 0 10px var(--neon-blue); }
+
+        /* BOTÓN CALCULAR */
+        .btn-calc {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            color: white;
+            font-weight: 900;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+
+        .btn-calc:active { transform: scale(0.95); }
+
+        /* ÁREA DE RESULTADOS */
+        .res-display {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .res-main {
+            font-size: 32px;
+            font-weight: 900;
+            display: block;
+            color: var(--neon-green);
+            text-shadow: 0 0 15px var(--neon-green);
+        }
+
+        /* NAVEGACIÓN VIBRANTE (DOCK) */
+        .nav-dock {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .nav-btn {
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        .nav-btn.active-nav {
+            filter: grayscale(0);
+            opacity: 1;
+            transform: scale(1.2) translateY(-5px);
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+
+        .nav-label { font-size: 8px; font-weight: 900; }
+
+        /* ICONOS ESPECÍFICOS */
+        .ic-b { background: rgba(0, 210, 255, 0.2); border: 1px solid var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
+        .ic-i { background: rgba(255, 0, 127, 0.2); border: 1px solid var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+        .ic-c { background: rgba(255, 110, 0, 0.2); border: 1px solid var(--neon-orange); box-shadow: 0 0 10px var(--neon-orange); }
+        .ic-p { background: rgba(57, 255, 20, 0.2); border: 1px solid var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="logo">PABLITO ELITE</div>
+</div>
+
+<div id="m-bayoneta" class="module active">
+    <div class="card bayoneta-card">
+        <h3>// MÓDULO BAYONETA</h3>
+        <label>OFFSET (MM)</label>
+        <input type="number" id="off" value="400">
+        <label>ÁNGULO (°)</label>
+        <input type="number" id="angB" value="45">
+        <label>AVANCE CODO 90° (MM)</label>
+        <input type="number" id="av90b" value="76">
+        <button class="btn-calc" onclick="calcB()">EJECUTAR CÁLCULO</button>
+        <div id="resB" class="res-display" style="display:none">
+            <span style="font-size:10px; color:#888">NIPLE REAL (CORTE)</span>
+            <span id="rNip" class="res-main">-</span>
+        </div>
+    </div>
+</div>
+
+<div id="m-injerto" class="module">
+    <div class="card injerto-card">
+        <h3>// MÓDULO INJERTO</h3>
+        <label>Ø COLECTOR (MM)</label>
+        <input type="number" id="cab" value="114.3">
+        <label>Ø INJERTO (MM)</label>
+        <input type="number" id="ram" value="60.3">
+        <label>ÁNGULO (°)</label>
+        <input type="number" id="angI" value="45">
+        <button class="btn-calc" onclick="calcI()">GENERAR PLANTILLA</button>
+        <div id="resI" class="res-display" style="display:none">
+            <div id="gridI" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="m-codo" class="module">
+    <div class="card codo-card">
+        <h3>// DEGRADAR CODO</h3>
+        <label>Ø EXTERIOR (MM)</label>
+        <input type="number" id="extC" value="60.3">
+        <label>AVANCE 90° (MM)</label>
+        <input type="number" id="av90c" value="76">
+        <label>ÁNGULO DESEADO (°)</label>
+        <input type="number" id="angC" value="45">
+        <button class="btn-calc" onclick="calcC()">OBTENER MARCA</button>
+        <div id="resC" class="res-display" style="display:none">
+            <span style="font-size:10px; color:#888">MARCA LOMO EXTERIOR</span>
+            <span id="rArco" class="res-main">-</span>
+        </div>
+    </div>
+</div>
+
+<div id="m-peso" class="module">
+    <div class="card peso-card">
+        <h3>// CÁLCULO DE MASA</h3>
+        <label>Ø EXTERIOR (MM)</label>
+        <input type="number" id="pD" value="60.3">
+        <label>ESPESOR (MM)</label>
+        <input type="number" id="pE" value="3.91">
+        <label>LARGO (MM)</label>
+        <input type="number" id="pL" value="6000">
+        <button class="btn-calc" onclick="calcP()">CALCULAR PESO</button>
+        <div id="resP" class="res-display" style="display:none">
+            <span style="font-size:10px; color:#888">PESO TOTAL (KG)</span>
+            <span id="rPeso" class="res-main">-</span>
+        </div>
+    </div>
+</div>
+
+<div class="nav-dock">
+    <div class="nav-btn active-nav" onclick="sw('m-bayoneta', this)">
+        <div class="nav-icon ic-b">📐</div>
+        <div class="nav-label">BAYONETA</div>
+    </div>
+    <div class="nav-btn" onclick="sw('m-injerto', this)">
+        <div class="nav-icon ic-i">✂️</div>
+        <div class="nav-label">INJERTO</div>
+    </div>
+    <div class="nav-btn" onclick="sw('m-codo', this)">
+        <div class="nav-icon ic-c">⭕</div>
+        <div class="nav-label">CODO</div>
+    </div>
+    <div class="nav-btn" onclick="sw('m-peso', this)">
+        <div class="nav-icon ic-p">⚖️</div>
+        <div class="nav-label">PESO</div>
+    </div>
+</div>
+
+<script>
+    function sw(id, el) {
+        document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active-nav'));
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active-nav');
+    }
+
+    function calcB() {
+        const o = parseFloat(document.getElementById('off').value);
+        const a = parseFloat(document.getElementById('angB').value);
+        const v = parseFloat(document.getElementById('av90b').value);
+        const rad = a * Math.PI / 180;
+        const nip = (o / Math.sin(rad)) - (2 * (v * Math.tan(rad / 2)));
+        document.getElementById('rNip').innerText = nip.toFixed(1) + " MM";
+        document.getElementById('resB').style.display = 'block';
+    }
+
+    function calcI() {
+        const D = parseFloat(document.getElementById('cab').value);
+        const d = parseFloat(document.getElementById('ram').value);
+        const ang = parseFloat(document.getElementById('angI').value);
+        const R = D / 2; const r = d / 2;
+        const theta = ang * Math.PI / 180;
+        let html = "";
+        for (let i = 0; i < 8; i++) {
+            let alfa = (i * 45) * Math.PI / 180;
+            let y = (Math.sqrt(R*R - Math.pow(r*Math.sin(alfa), 2)) / Math.sin(theta)) - (r*Math.cos(alfa) / Math.tan(theta));
+            let base = (Math.sqrt(R*R - r*r) / Math.sin(theta)) - (r / Math.tan(theta));
+            if(ang == 90) base = Math.sqrt(R*R - r*r);
+            html += `<div style="padding:5px; border-bottom:1px solid #333;">${i*45}°: <span style="color:var(--neon-green)">${Math.abs(y - base).toFixed(1)}</span></div>`;
+        }
+        document.getElementById('gridI').innerHTML = html;
+        document.getElementById('resI').style.display = 'block';
+    }
+
+    function calcC() {
+        const dExt = parseFloat(document.getElementById('extC').value);
+        const av90 = parseFloat(document.getElementById('av90c').value);
+        const angD = parseFloat(document.getElementById('angC').value);
+        const arcoExt = (2 * Math.PI * (av90 + dExt/2) * angD) / 360;
+        document.getElementById('rArco').innerText = arcoExt.toFixed(1) + " MM";
+        document.getElementById('resC').style.display = 'block';
+    }
+
+    function calcP() {
+        const w = (document.getElementById('pD').value - document.getElementById('pE').value) * document.getElementById('pE').value * 0.02466 * (document.getElementById('pL').value / 1000);
+        document.getElementById('rPeso').innerText = w.toFixed(2) + " KG";
+        document.getElementById('resP').style.display = 'block';
+    }
+</script>
+</body>
+</html>
